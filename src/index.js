@@ -9,8 +9,7 @@ const user = {};
 const privates = {
 	token: '',
 	userInfo: '',
-	phone: '',
-	authPath: ''
+	phone: ''
 };
 
 /* ********** 外部方法定义 ********** */
@@ -49,7 +48,7 @@ user.checkLogin = () => privates.checkStorage().then(token => {
 	} else {
 		// 如果不在登录态
 		// 检查用户是否已经授权获取用户信息（需要先授权，再登录）
-		return privates.checkUserInfoAuth();
+		return privates.checkUserInfoAuth('checkLogin');
 	}
 }).catch(err => {
 	// 在最外层promise catch掉本层($wxp.getStorage)及内部所有错误，并返回给页面
@@ -58,7 +57,6 @@ user.checkLogin = () => privates.checkStorage().then(token => {
 
 // 检查本地服务器是否存在用户信息
 user.checkUserInfo = () =>
-	// privates合并了apiAuth的所有方法
 	privates.getUserInfo().then(userInfo => {
 		// 本地服务器已存在用户信息
 		if (userInfo) {
@@ -68,7 +66,7 @@ user.checkUserInfo = () =>
 			return userInfo;
 		} else {
 			// 本地服务器无用户信息。检查用户信息是否已授权获取
-			return privates.checkUserInfoAuth();
+			return privates.checkUserInfoAuth('checkUserInfo');
 		}
 	});
 
@@ -144,31 +142,36 @@ privates.navigateToAuthPage = authType => {
 	const currUrl = pages[pages.length - 1].route;
 	// 跳到自定义的授权登录页，让用户点击按钮授权
 	wx.navigateTo({
-		url: `${privates.authPath}?from=/${currUrl}&auth=${authType}`
+		url: `${privates.authPath}?from=/${currUrl}&authType=${authType}`
 	})
 	// 返回reject状态，防止进入.then
 	return Promise.reject('未获取用户授权');
 };
 
 // 检查用户信息授权状态
-privates.checkUserInfoAuth = () => privates.isUserInfoAuth().then(isAuth => {
+privates.checkUserInfoAuth = caller => privates.isUserInfoAuth().then(isAuth => {
 	// 如果用户已授权访问用户信息
 	if (isAuth) {
-		// 直接执行登录
-		return privates.login().then(rs => {
-			if (rs && rs.data) {
-				const token = rs.data.token;
-				// 缓存token
-				return privates.tokenStorage(token).then(() => {
-					// 前端本地缓存token(代码里缓存)
-					privates.token = token;
-					// 获取微信用户信息
-					return privates.userInfoInit();
-				})
-			} else {
-				return Promise.reject(rs.msg || '登录失败');
-			}
-		})
+		if (caller === 'checkLogin') {
+			// 直接执行登录
+			return privates.login().then(rs => {
+				if (rs && rs.data) {
+					const token = rs.data.token;
+					// 缓存token
+					return privates.tokenStorage(token).then(() => {
+						// 前端本地缓存token(代码里缓存)
+						privates.token = token;
+						// 获取微信用户信息
+						return privates.userInfoInit();
+					})
+				} else {
+					return Promise.reject(rs.msg || '登录失败');
+				}
+			})
+		} else {
+			// 获取微信用户信息
+			return privates.userInfoInit();
+		}
 	} else {
 		// 未授权访问用户信息。前往授权页请求授权用户信息
 		privates.navigateToAuthPage('userInfo');
@@ -208,15 +211,13 @@ user.init = ({
 	authPath,
 	getUserInfo,
 	getPhone,
-	setUserInfo,
-	setPhone
+	setUserInfo
 }) => {
 	privates.loginApi = loginApi;
 	privates.authPath = authPath;
 	privates.getUserInfo = getUserInfo;
 	privates.getPhone = getPhone;
 	privates.setUserInfo = setUserInfo;
-	privates.setPhone = setPhone;
 }
 
 export default user;
