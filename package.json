@@ -1,6 +1,6 @@
 {
   "name": "mini-program-authority",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "小程序登录授权工具包",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -10,7 +10,11 @@
   ],
   "author": "Sherry",
   "license": "MIT",
-  "keywords": ["authority", "mini", "mini-program"],
+  "keywords": [
+    "authority",
+    "mini",
+    "mini-program"
+  ],
   "repository": "https://git.code.tencent.com/sherry_npm/mini-program-authority.git",
   "scripts": {
     "release_major": "npm version major",
