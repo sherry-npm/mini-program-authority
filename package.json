@@ -10,6 +10,8 @@
   ],
   "author": "Sherry",
   "license": "MIT",
+  "keywords": ["authority", "mini", "mini-program"],
+  "repository": "https://git.code.tencent.com/sherry_npm/mini-program-authority.git",
   "scripts": {
     "release_major": "npm version major",
     "release_minor": "npm version minor",
