@@ -141,7 +141,7 @@ privates.navigateToAuthPage = authType => {
 	const pages = getCurrentPages();
 	const currUrl = pages[pages.length - 1].route;
 	// 跳到自定义的授权登录页，让用户点击按钮授权
-	wx.navigateTo({
+	wx.redirectTo({
 		url: `${privates.authPath}?from=/${currUrl}&authType=${authType}`
 	})
 	// 返回reject状态，防止进入.then
