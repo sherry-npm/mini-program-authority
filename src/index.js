@@ -15,45 +15,55 @@ const privates = {
 /* ********** 外部方法定义 ********** */
 
 // 检查用户是否在登录态
-user.checkLogin = () => privates.checkStorage().then(token => {
-	// 如果在登录态
-	if (token) {
-		// 检查token是否过期
-		return privates.checkSession().then(isOutDate => {
-			// token已过期
-			if (isOutDate) {
-				// 重新执行登录
-				return privates.login().then(rs => {
-					if (rs && rs.data) {
-						const newToken = rs.data.token;
-						// 缓存token
-						return privates.tokenStorage(newToken).then(() => {
-							// 前端本地缓存token(代码里缓存)
-							privates.token = newToken;
-							// 检查本地服务器，是否已存有用户信息
-							return user.checkUserInfo(newToken);
+user.checkLogin = () => {
+	// 如果本次代码运行，已检查过登录状态，则token有值。直接取即可
+	if (privates.token && privates.userInfo) {
+		return privates.userInfo;
+	} else {
+		// 检查storage是否存有token
+		return privates.checkStorage().then(token => {
+			// 如果在登录态
+			if (token) {
+				// 检查token是否过期
+				return privates.checkSession().then(isOutDate => {
+					// token已过期
+					if (isOutDate) {
+						// 重新执行登录
+						return privates.login().then(rs => {
+							if (rs && rs.data) {
+								const newToken = rs.data.token;
+								// 缓存token
+								return privates.tokenStorage(newToken).then(() => {
+									// 前端本地缓存token(代码里缓存)
+									privates.token = newToken;
+									// 检查本地服务器，是否已存有用户信息
+									return user.checkUserInfo(newToken);
+								})
+							} else {
+								return Promise.reject(rs.msg || '登录失败');
+							}
 						})
 					} else {
-						return Promise.reject(rs.msg || '登录失败');
+						// token未过期
+						// 前端本地缓存token(代码里缓存)
+						privates.token = token;
+						// 检查本地服务器，是否已存有用户信息
+						return user.checkUserInfo(token);
 					}
 				})
 			} else {
-				// token未过期
-				// 前端本地缓存token(代码里缓存)
-				privates.token = token;
-				// 检查本地服务器，是否已存有用户信息
-				return user.checkUserInfo(token);
+				// 如果不在登录态
+				// 检查用户是否已经授权获取用户信息（需要先授权，再登录）
+				return privates.checkUserInfoAuth('checkLogin');
 			}
-		})
-	} else {
-		// 如果不在登录态
-		// 检查用户是否已经授权获取用户信息（需要先授权，再登录）
-		return privates.checkUserInfoAuth('checkLogin');
+		}).catch(err => {
+			// 在最外层promise catch掉本层($wxp.getStorage)及内部所有错误，并返回给页面
+			return Promise.reject(err);
+		});
 	}
-}).catch(err => {
-	// 在最外层promise catch掉本层($wxp.getStorage)及内部所有错误，并返回给页面
-	return Promise.reject(err);
-});
+}
+
+
 
 // 检查本地服务器是否存在用户信息
 user.checkUserInfo = () =>
