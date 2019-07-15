@@ -80,7 +80,7 @@ user.checkPhone = () => privates.getPhone().then(rs => {
 		return rs;
 	} else {
 		// 本地服务器无用户手机号。前往授权页请求授权手机号
-		privates.navigateToAuthPage('phone');
+		return privates.navigateToAuthPage('phone');
 	}
 });
 
@@ -174,7 +174,7 @@ privates.checkUserInfoAuth = caller => privates.isUserInfoAuth().then(isAuth => 
 		}
 	} else {
 		// 未授权访问用户信息。前往授权页请求授权用户信息
-		privates.navigateToAuthPage('userInfo');
+		return privates.navigateToAuthPage('userInfo');
 	}
 });
 
