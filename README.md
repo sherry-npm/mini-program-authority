@@ -14,7 +14,7 @@ mini-program-authority 对小程序前端的登录授权逻辑进行了封装。
 授权页请求授权按钮，以及获取授权后、授权信息存入开发者服务器的简单逻辑，交给开发者去实现。
 
 ## 使用说明
-###1.init(loginApi, authPath, getUserInfo, getPhone, setUserInfo)：初始化
+###1.init(loginApi, authPath, getUserInfo, getPhone, setUserInfo)：初始化 全局只初始化一次即可
 
 
 loginApi(string，必选)：开发者服务器的登录接口地址
@@ -128,7 +128,7 @@ Api.getPhone = () => request({
 import auth from 'mini-program-authority';
 import apiAuth from './io/auth';
 
-// 初始化
+// 初始化 建议在入口文件init
 auth.init({
 	loginApi: 'https://api.test.com/login',
 	authPath: '/pages/auth',
@@ -136,7 +136,7 @@ auth.init({
 	getPhone: apiAuth.getPhone
 });
 
-// 检查登录状态
+// 检查登录状态 在进入需要登录授权页面的前一个页面，进行checkLogin，checkLogin.then()内执行页面跳转，跳转到需授权的页面
 auth.checkLogin().then(userInfo => {
 	console.log('用户已登录：', userInfo);
 	// 检查用户手机号授权
