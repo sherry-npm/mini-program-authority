@@ -1,6 +1,6 @@
 {
-  "name": "@tencent/mini-program-authority",
-  "version": "1.0.0",
+  "name": "mini-program-authority",
+  "version": "0.0.1",
   "description": "小程序登录授权工具包",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -8,14 +8,14 @@
     "src/*.js",
     "dist/*.js"
   ],
-  "author": "shryzhang",
+  "author": "Sherry",
   "license": "MIT",
   "scripts": {
-    "release_major": "tnpm version major",
-    "release_minor": "tnpm version minor",
-    "release_patch": "tnpm version patch",
-    "postversion": "tnpm publish",
-    "prepublishOnly": "tnpm run build",
+    "release_major": "npm version major",
+    "release_minor": "npm version minor",
+    "release_patch": "npm version patch",
+    "postversion": "npm publish",
+    "prepublishOnly": "npm run build",
     "build": "webpack"
   },
   "dependencies": {},

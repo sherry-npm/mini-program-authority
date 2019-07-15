@@ -2,11 +2,11 @@
 
 ## 安装
 ```bash
-tnpm install @tencent/mini-program-authority
+npm install mini-program-authority
 ```
 
 ## 功能简介
-@tencent/mini-program-authority 对小程序前端的登录授权逻辑进行了封装。包含检查小程序登录状态、检查微信用户信息授权状态、检查微信用户手机号授权状态，三部分逻辑。
+mini-program-authority 对小程序前端的登录授权逻辑进行了封装。包含检查小程序登录状态、检查微信用户信息授权状态、检查微信用户手机号授权状态，三部分逻辑。
 开发者引入工具包，初始化传入必选参数后，直接调用工具包提供的方法，即可完成所需的状态检查，并执行不同状态下的处理逻辑。
 
 ## 注意事项
@@ -84,7 +84,7 @@ Api.getPhone = () => request({
 3.页面使用demo
 ```javascript
 // use.js
-import auth from '@tencent/mini-program-authority';
+import auth from 'mini-program-authority';
 import apiAuth from './io/auth';
 
 // 初始化
