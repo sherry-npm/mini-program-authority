@@ -18,7 +18,7 @@ const privates = {
 user.checkLogin = () => {
 	// 如果本次代码运行，已检查过登录状态，则token有值。直接取即可
 	if (privates.token && privates.userInfo) {
-		return privates.userInfo;
+		return Promise.resolve(privates.userInfo);
 	} else {
 		// 检查storage是否存有token
 		return privates.checkStorage().then(token => {
