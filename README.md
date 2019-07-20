@@ -139,3 +139,6 @@ auth.checkLogin().then(userInfo => {
 });
 
 ```
+
+## 【附】登录授权逻辑完整流程图
+![小程序登录授权流程图](https://cdn.jia.qq.com/2019/PES-FE/static/images/小程序登录授权流程图.png "小程序登录授权流程图")
