@@ -6,12 +6,13 @@ npm install mini-program-authority
 ```
 
 ## 功能简介
-mini-program-authority 对小程序前端的登录授权逻辑进行了封装。包含检查小程序登录状态、检查微信用户信息授权状态、检查微信用户手机号授权状态，三部分逻辑。
-开发者引入工具包，初始化传入必选参数后，直接调用工具包提供的方法，即可完成所需的状态检查，并执行不同状态下的处理逻辑。
+mini-program-authority 对小程序前端的登录授权逻辑进行了封装。
+
+开发者引入工具包，初始化传入必选参数后，直接调用工具包提供的方法，即可完成登录授权验证。
 
 ## 注意事项
 最新微信小程序授权均采用授权按钮方式，我们这里要求，授权按钮放置于独立的授权页面。
-授权页请求授权按钮，以及获取授权后、授权信息存入开发者服务器的简单逻辑，交给开发者去实现。
+授权页请求授权、授权信息存入开发者服务器的相关逻辑，交给开发者去实现。
 
 ## 使用说明
 ###1.init(loginApi, authPath, getUserInfo, getPhone, setUserInfo)：初始化 全局只初始化一次即可
@@ -39,7 +40,12 @@ setUserInfo(function，非必须)：向开发者服务器存储用户信息的�
 【限制】传入参数严格等于wx.getUserInfo返回的字段值
 
 
-**【注】setUserInfo逻辑，正常是在开发者自定义的授权页拿到用户授权后，由开发者直接执行，将获取的授权信息存入开发者服务器。这里提供的setUserInfo参数，主要用于，用户允许授权，但授权页存入开发者服务器失败情况下，备用。**
+**
+【注】
+setUserInfo逻辑，正常应在开发者自定义的授权页拿到用户授权后，由开发者直接执行，将获取的授权信息存入开发者服务器。
+这里提供的setUserInfo参数，主要用于，用户允许授权，但授权页存入开发者服务器失败的场景下，备用。
+如果不提供setUserInfo方法，建议必要时，在checkLogin回调中，将userInfo手动存入开发者服务器。
+**
 
 
 
@@ -47,35 +53,18 @@ setUserInfo(function，非必须)：向开发者服务器存储用户信息的�
 
 如果未登录，自动执行登录逻辑，其中包含请求授权用户信息。
 
+如果已登录，获取用户信息并返回。
 
+### 3.checkPhone：检查用户手机号，返回promise化的phone
 
-### 3.checkUserInfo：检查用户信息，返回promise化的userInfo
+如果开发者服务器存有用户手机号，直接返回。
 
-如果开发者服务器存有用户信息，直接返回。如果没有，获取授权后，从微信拉取用户信息并返回。
+如果没有，前往授权页获取授权。
 
+### 4.getToken：获取前端本地缓存的token
 
-
-### 4.checkPhone：检查用户手机号，返回promise化的phone
-
-如果开发者服务器存有用户手机号，直接返回。如果没有，前往授权页获取授权。
-
-
-
-### 5.getToken：获取前端本地缓存的token
-
-代码层面缓存。checkLogin后可拿到值
-
-
-
-### 6.getUserInfo：获取前端本地缓存的userInfo
-
-代码层面缓存。checkLogin/checkUserInfo后可拿到值
-
-
-
-### 7.getPhone：获取前端本地缓存的phone
-
-代码层面缓存。checkPhone后可拿到值
+代码层面缓存。
+checkLogin一次后，全局可拿到值。
 
 
 
@@ -84,7 +73,7 @@ setUserInfo(function，非必须)：向开发者服务器存储用户信息的�
 ```javascript
 // request.js
 const request = options => new Promise((resolve, reject) => {
-	wx.request({
+    wx.request({
 		...options,
 		success(res) {
 			resolve(res);
@@ -139,6 +128,8 @@ auth.init({
 // 检查登录状态 在进入需要登录授权页面的前一个页面，进行checkLogin，checkLogin.then()内执行页面跳转，跳转到需授权的页面
 auth.checkLogin().then(userInfo => {
 	console.log('用户已登录：', userInfo);
+	const token = auth.getToken();
+	console.log('token:', token);
 	// 检查用户手机号授权
 	return auth.checkPhone().then(phone => {
 		console.log('已获取用户手机号：', phone);
@@ -147,8 +138,4 @@ auth.checkLogin().then(userInfo => {
 	console.log('err:', err);
 });
 
-// 检查用户信息授权
-auth.checkUserInfo().then(userInfo => {
-	console.log('已获取用户信息：', userInfo);
-});
 ```
