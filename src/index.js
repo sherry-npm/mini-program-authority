@@ -201,6 +201,9 @@ user.checkPhone = () => {
 	}
 }
 
+// 最新用户信息获取
+user.checkUserInfo = () => privates.checkUserInfo(privates.token);
+
 // 对象初始化（工具包入口）
 user.init = ({
 	loginApi,
