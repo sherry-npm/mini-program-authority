@@ -148,10 +148,22 @@ privates.checkUserInfo = token =>
 		}
 	});
 
+// 检查token是否存在、以及是否过期（返回token）
+privates.checkToken = () => privates.checkStorage().then(token => {
+	if (token) {
+		// 检查token是否过期
+		return privates.checkSession().then(isExpired => {
+			if (!isExpired) {
+				privates.token = token;
+				return token;
+			}
+		});
+	}
+});
 
 /* ********** 外部方法定义 ********** */
 
-// 获取token的方法
+// 获取token的方法（本次运行小程序缓存的token，仅在本次运行有效）
 user.getToken = () => privates.token;
 
 // 检查用户登录状态 返回 userInfo
@@ -203,6 +215,9 @@ user.checkPhone = () => {
 
 // 最新用户信息获取
 user.checkUserInfo = () => privates.checkUserInfo(privates.token);
+
+//手动检查storage里是否有未过期token
+user.checkToken = privates.checkToken;
 
 // 对象初始化（工具包入口）
 user.init = ({
