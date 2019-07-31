@@ -83,18 +83,18 @@ privates.navigateToAuthPage = authType => {
 	const pages = getCurrentPages();
 	const currUrl = pages[pages.length - 1].route;
 	const options = pages[pages.length - 1].options;
-	let path = currUrl;
+	let path = `/${currUrl}`;
 	if (options) {
 		path = path + '?';
 		Object.keys(options).forEach(key => {
 			const value = options[key];
 			path = path + `${key}=${value}&`
 		});
-		path = path.substring(0, path.length - 1);
+		path = encodeURIComponent(`${path.substring(0, path.length - 1)}`);
 	}
 	// 跳到自定义的授权登录页，让用户点击按钮授权
 	wx.navigateTo({
-		url: `${privates.authPath}?from=/${path}&authType=${authType}`
+		url: `${privates.authPath}?from=${path}&authType=${authType}`
 	})
 	// 返回reject状态，防止进入.then
 	return Promise.reject('未获取用户授权');
