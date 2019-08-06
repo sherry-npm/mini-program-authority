@@ -8,7 +8,7 @@ const user = {};
 /* ***** 存储不需要被外部访问的方法 ***** */
 const privates = {
 	token: '',
-	userInfo: {},
+	userInfo: null,
 	phone: ''
 };
 
