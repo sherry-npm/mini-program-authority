@@ -226,7 +226,7 @@ user.checkPhone = () => {
 // 最新用户信息获取
 user.checkUserInfo = () => privates.checkUserInfo(privates.token);
 
-//手动检查storage里是否有未过期token
+// 手动检查storage里是否有未过期token
 user.checkToken = privates.checkToken;
 
 // 对象初始化（工具包入口）

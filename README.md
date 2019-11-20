@@ -15,7 +15,7 @@ mini-program-authority 对小程序前端的登录授权逻辑进行了封装。
 授权页请求授权、授权信息存入开发者服务器的相关逻辑，交给开发者去实现。
 
 ## 使用说明
-###1.init(loginApi, authPath, getUserInfo, getPhone, setUserInfo)：初始化 全局只初始化一次即可
+### 1.init(loginApi, authPath, getUserInfo, getPhone, setUserInfo)：初始化 全局只初始化一次即可
 
 
 loginApi(string，必选)：开发者服务器的登录接口地址
@@ -66,7 +66,12 @@ setUserInfo逻辑，正常应在开发者自定义的授权页拿到用户授权
 代码层面缓存。
 checkLogin一次后，全局可拿到值。
 
+### 5.checkUserInfo：最新用户信息获取
 
+方便开发者手动同步服务器当前的用户信息。
+
+### 6.checkToken：手动检查storage里是否有未过期token
+如果有，返回这个 token。如果没有，返回 ‘’。
 
 ## 使用 Demo
 1.封装promise化的request（仅供参考）
