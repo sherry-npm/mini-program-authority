@@ -28,7 +28,7 @@ module.exports = {
 	},
 	plugins: [
 		new CleanWebpackPlugin()
-	],
+	]
 	// 将报错信息明确指向源码位置的工具
-	devtool: 'inline-source-map'
+	// devtool: 'source-map'
 }
