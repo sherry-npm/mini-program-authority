@@ -3,28 +3,25 @@
   "version": "0.3.3",
   "description": "小程序登录授权工具包",
   "main": "dist/index.js",
-  "module": "dist/index.js",
-  "files": [
-    "src/*.js",
-    "dist/*.js"
-  ],
-  "author": "Sherry",
-  "license": "MIT",
-  "keywords": [
-    "authority",
-    "mini",
-    "mini-program"
-  ],
-  "repository": "https://git.code.tencent.com/sherry_npm/mini-program-authority.git",
+  "module": "src/index.js",
   "scripts": {
     "release_major": "npm version major",
     "release_minor": "npm version minor",
     "release_patch": "npm version patch",
     "postversion": "npm publish",
     "prepublishOnly": "npm run build",
-    "build": "webpack"
+    "build": "webpack",
+    "lint": "eslint .",
+    "prettier": "prettier --write ."
   },
-  "dependencies": {},
+  "repository": "https://git.code.tencent.com/sherry_npm/mini-program-authority.git",
+  "keywords": [
+    "authority",
+    "mini",
+    "mini-program"
+  ],
+  "author": "Sherry",
+  "license": "MIT",
   "devDependencies": {
     "@babel/cli": "^7.5.0",
     "@babel/core": "^7.5.4",
@@ -33,21 +30,37 @@
     "babel-eslint": "^10.0.2",
     "babel-loader": "^8.0.6",
     "clean-webpack-plugin": "^3.0.0",
-    "eslint": "^6.0.1",
+    "eslint": "^7.9.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.11",
+    "prettier": "^2.0.5",
     "webpack": "^4.35.3",
     "webpack-cli": "^3.3.5"
   },
-  "gitHooks": {
-    "pre-commit": "lint-staged"
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "lint-staged": {
     "*.js": [
-      "eslint src/*",
-      "git add"
+      "npm run prettier",
+      "npm run lint",
+      "git add ."
     ],
     "*.vue": [
       "eslint src/*",
       "git add"
     ]
+  },
+  "files": [
+    "src/*.js",
+    "dist/*.js"
+  ],
+  "dependencies": {},
+  "gitHooks": {
+    "pre-commit": "lint-staged"
   }
 }
